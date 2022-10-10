@@ -1,0 +1,124 @@
+Set up load balancing on CentOS 7
+
+Requirements:
+
+CentOS server
+
+1 - load-balancer
+1 - webserver1
+1 - webserver2
+
+
+Step 1: Installation of Apache
+
+Install apache server on each CentOS server.
+
+sudo yum install apache - execute this command on each server.
+
+sudo service httpd start - make sure to start the httpd service on each server.
+
+sudo chkconfig httpd on - execute this command to make sure to start the httpd service upon booting of each server.
+
+Step 2: Creation of Index file
+
+Webserver 1: 
+
+sudo vi /var/www/html/index.html
+
+insert this: 
+
+<html>
+This is webserver1
+</html>
+
+Then save..
+
+Webserver 2: 
+
+sudo vi /var/www/html/index.html
+
+insert this: 
+
+<html>
+This is webserver2
+</html>
+
+Then save..
+
+Step 3: Configure firewall-cmd
+
+Execute this command on each server. 
+
+sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+
+sudo firewall-cmd reload
+
+Step 4: Configuration of Load Balancer server
+
+Check the 00-proxy.conf
+
+Execute this command to check.
+
+sudo vi /etc/httpd/conf.modules.d/00-proxy.conf
+
+Make sure the content of the files from 00-proxy.conf are same details listed below.
+
+Note: If you see # after the LoadModule text please remove. 
+
+# This file configures all the proxy modules:
+LoadModule proxy_module modules/mod_proxy.so
+LoadModule lbmethod_bybusyness_module modules/mod_lbmethod_bybusyness.so
+LoadModule lbmethod_byrequests_module modules/mod_lbmethod_byrequests.so
+LoadModule lbmethod_bytraffic_module modules/mod_lbmethod_bytraffic.so
+LoadModule lbmethod_heartbeat_module modules/mod_lbmethod_heartbeat.so
+LoadModule proxy_ajp_module modules/mod_proxy_ajp.so
+LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+LoadModule proxy_connect_module modules/mod_proxy_connect.so
+LoadModule proxy_express_module modules/mod_proxy_express.so
+LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so
+LoadModule proxy_fdpass_module modules/mod_proxy_fdpass.so
+LoadModule proxy_ftp_module modules/mod_proxy_ftp.so
+LoadModule proxy_http_module modules/mod_proxy_http.so
+LoadModule proxy_scgi_module modules/mod_proxy_scgi.so
+LoadModule proxy_wstunnel_module modules/mod_proxy_wstunnel.so
+~
+~
+~
+~
+~
+~
+"/etc/httpd/conf.modules.d/00-proxy.conf" 16L, 957C
+
+
+Step 5: Create default site file
+
+Execute this on load balancer server. 
+
+sudo vi /etc/httpd/conf.d/default-site.conf
+
+Insert this. 
+
+Please make sure to change your ip address according to your webserver ip address.
+
+Replace the 'your_ip_address' based on your webserver ip address
+
+<VirtualHost *:80>
+<Proxy balancer://mycluster>
+    BalancerMember http://your_ip_address:80
+    BalancerMember http://your_ip_address:80
+</Proxy>
+
+     ProxyPreserveHost On
+
+     ProxyPass / balancer://mycluster/
+     ProxyPassReverse / balancer://mycluster/
+
+</VirtualHost>
+
+Step 6: Validation
+
+Get the ip address of your load balancer server then copy and paste on your web browser. 
+
+Upon refreshing the browser you must see 'This is webserver1' or 'This is webserver2' from your browser.
+
+
