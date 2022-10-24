@@ -1,0 +1,84 @@
+How to Install Jenkins on CentOS 7 
+
+In this article, you’ll come to know how to install Jenkins on CentOS 7.
+Jenkins is a very popular continuous integration and continuous delivery (CI/CD) tool used for development, deployment and automation.
+
+Prerequisite:
+
+Access to CentOS 7 VM or Machine
+SSH access with root or sudo privileges
+
+Step 1: Install OpenJDK 8 package
+
+sudo yum install java-1.8.0-openjdk-devel
+
+Step 2: Install Jenkins repository
+
+curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
+
+sudo rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+
+Step 3: Install stable Jenkins on CentOS 7
+
+sudo yum install jenkins -y
+
+Step 4: Start the Jenkins service and auto-start on boot
+
+sudo systemctl start jenkins
+
+sudo systemctl enable jenkins
+
+Step 5: Verify the status of Jenkins
+
+systemctl status jenkins
+
+Step 6: Configure the firewall and allow 8080 port
+
+sudo firewall-cmd --permanent --zone=public --add-port=8080/tcp
+sudo firewall-cmd --reload
+
+Step 7: Configure Jenkins on CentOS
+
+To configure Jenkins you need to access it on any web browser with a domain/host IP address.
+
+http://your_ip_or_domain:8080
+
+
+7.1: Unlock Jenkins
+
+When you access Jenkins for the first time (after installation) it will ask you the password.
+And to know the password run the below command, and you will see a 32-character alphanumeric password.
+
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+Copy the password and paste it into the Jenkins Administrator section.
+
+On the Next page, Jenkins will ask you to choose/install the suggested plugins or the select most suitable/specific plugins.
+
+I choose suggested plugins to continue the plugin’s installation process.
+
+
+7.2: Customize Jenkins
+
+7.3: Getting Started
+
+Next, it will ask you to setup the first admin user. Fill in the details, and click on ‘save and continue’.
+
+Next, it will ask you to setup the first admin user. Fill in the details, and click on ‘save and continue’.
+
+7.4: Create First Admin User
+
+In the next steps, you will get the Jenkins URL with the port. Click on ‘save and finish‘. 
+
+7.5: Instance Configuration
+
+The next step is to click on ‘start using Jenkins’.
+
+7.6: Jenkins Dashboard
+
+It will redirect to the Jenkins dashboard.
+
+
+
+
+
