@@ -51,7 +51,7 @@ Execute this command on each server.
 
 sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 
-sudo firewall-cmd reload
+sudo firewall-cmd --reload
 
 Step 4: Configuration of Load Balancer server
 
